@@ -40,7 +40,19 @@ const BeefTallowCalculator = () => {
   const c = (o, d) => Object.entries(d).reduce((a, [k, v]) => {
     const g = v.r * o / 2;
     const uc = Math.ceil(g / v.v);
-    a[k] = { a: `${g.toFixed(2)} g`, g, c: g / 1000 * v.p, uc, ...v };
+    const bestPrice = v.suppliers.reduce((best, supplier) => {
+      const applicablePrice = supplier.prices.reduce((p, tier) => tier.kg <= g/1000 ? tier.price : p, supplier.prices[0].price);
+      return applicablePrice < best.price ? { price: applicablePrice, supplier: supplier.name } : best;
+    }, { price: Infinity, supplier: '' });
+    a[k] = { 
+      a: `${g.toFixed(2)} g`, 
+      g, 
+      c: g / 1000 * bestPrice.price, 
+      uc, 
+      ...v, 
+      currentSupplier: bestPrice.supplier,
+      currentPrice: bestPrice.price
+    };
     return a;
   }, {});
 
