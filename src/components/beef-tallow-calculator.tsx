@@ -10,8 +10,54 @@ const Label = ({ children, className = "", ...props }: { children: ReactNode, cl
 const Select = ({ className = "", ...props }: { className?: string, [key: string]: any }) => <select className={`border rounded px-2 py-1 ${className}`} {...props} />;
 import { initData } from '@/lib/recipe';
 
+interface Supplier {
+  name: string;
+  prices: { kg: number; price: number }[];
+}
+
+interface Ingredient {
+  suppliers: Supplier[];
+  v: number;
+  r: number;
+  a?: string;
+  g?: number;
+  c?: number;
+  uc?: number;
+  currentSupplier?: string;
+  currentPrice?: number;
+}
+
+interface State {
+  o: number;
+  pp: number;
+  pc: number;
+  pac: number;
+  d: Record<string, Ingredient>;
+  i: Record<string, Ingredient>;
+  p: {
+    pc: number;
+    ic: number;
+    pac: number;
+    tc: number;
+    r: number;
+    pf: number;
+    pp: number;
+  };
+  n: {
+    n: string;
+    suppliers: Supplier[];
+    v: number;
+    r: number;
+  };
+  rn: string;
+  r: Record<string, Record<string, Ingredient>>;
+  cr: string;
+  sortColumn: string;
+  sortDirection: 'asc' | 'desc';
+}
+
 const BeefTallowCalculator = () => {
-  const [s, setS] = useState({ 
+  const [s, setS] = useState<State>({ 
     o: 2, pp: 23, pc: 8, pac: 0.36, 
     d: initData, 
     i: {}, 
@@ -112,7 +158,7 @@ const BeefTallowCalculator = () => {
     }
   };
 
-  const handleSort = (column) => {
+  const handleSort = (column: string) => {
     setS(prev => ({
       ...prev,
       sortColumn: column,
