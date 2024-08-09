@@ -101,7 +101,7 @@ const BeefTallowCalculator = () => {
 
   const calculateIngredients = (oilAmount: number, ingredients: Record<string, Ingredient>): Record<string, Ingredient> => 
     Object.entries(ingredients).reduce((a: Record<string, Ingredient>, [k, v]) => {
-      const g = v.r * oilAmount / 2;
+      const g = v.r * oilAmount;
       const uc = Math.ceil(g / v.v);
       const bestPrice = v.suppliers.reduce((best, supplier) => {
         const applicablePrice = supplier.prices.reduce((p, tier) => {
