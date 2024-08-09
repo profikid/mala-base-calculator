@@ -107,7 +107,7 @@ const BeefTallowCalculator = () => {
     const totalCost = ingredientCost + packagingTotalCost;
     const revenue = packageCount * packagePrice;
     const profit = revenue - totalCost;
-    const unitCostSum = Object.values(ingredients).reduce((sum, { currentPrice, v }) => sum + ((currentPrice ?? 0) * (v / 1000)), 0);
+    const unitCostSum = Object.values(ingredients).reduce((sum, { c }) => sum + (c ?? 0), 0);
     const profitFromUnitCostSum = revenue - unitCostSum;
     return { 
       pc: packageCount, 
@@ -376,7 +376,7 @@ const BeefTallowCalculator = () => {
                 { k: 'r', l: 'Revenue (€)' },
                 { k: 'pf', l: 'Profit (€)' },
                 { k: 'pp', l: 'Profit Percentage' },
-                { k: 'ucs', l: 'Unit Cost Sum (€)' },
+                { k: 'ucs', l: 'Total Ingredient Cost (€)' },
                 { k: 'pfucs', l: 'Profit from Unit Cost Sum (€)' },
                 { k: 'ppucs', l: 'Profit Percentage from Unit Cost Sum' }
               ].map(({ k, l }) => (
