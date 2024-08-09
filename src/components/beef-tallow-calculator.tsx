@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-const Card = ({ children }) => <div className="bg-white shadow rounded-lg p-6">{children}</div>;
-const CardHeader = ({ children }) => <div className="mb-4">{children}</div>;
-const CardContent = ({ children }) => <div>{children}</div>;
-const Button = ({ children, ...props }) => <button className="bg-blue-500 text-white px-4 py-2 rounded" {...props}>{children}</button>;
-const Input = (props) => <input className="border rounded px-2 py-1" {...props} />;
-const Label = ({ children, ...props }) => <label className="block mb-2" {...props}>{children}</label>;
+const Card = ({ children, className = "" }) => <div className={`bg-white shadow rounded-lg p-6 ${className}`}>{children}</div>;
+const CardHeader = ({ children, className = "" }) => <div className={`mb-4 ${className}`}>{children}</div>;
+const CardContent = ({ children, className = "" }) => <div className={className}>{children}</div>;
+const Button = ({ children, className = "", ...props }) => <button className={`bg-blue-500 text-white px-4 py-2 rounded ${className}`} {...props}>{children}</button>;
+const Input = ({ className = "", ...props }) => <input className={`border rounded px-2 py-1 ${className}`} {...props} />;
+const Label = ({ children, className = "", ...props }) => <label className={`block mb-2 ${className}`} {...props}>{children}</label>;
 
 const initData = {
   'Dried chilies': { p: 20, u: 5, v: 250, r: 400 },
@@ -98,15 +98,15 @@ const BeefTallowCalculator = () => {
         <h2>Beef Tallow Calculator</h2>
       </CardHeader>
       <CardContent>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '20px' }}>
+        <div className="grid grid-cols-2 gap-2 mb-5">
           {[
             { k: 'o', l: 'Total Oil (kg)', step: '0.1' },
             { k: 'pp', l: 'Package Price (€)', step: '0.01' },
             { k: 'pc', l: 'Package Count', step: '1' },
             { k: 'pac', l: 'Packaging Cost (€)', step: '0.01' }
           ].map(({ k, l, step }) => (
-            <div key={k} style={{ display: 'flex', alignItems: 'center' }}>
-              <Label htmlFor={k} style={{ marginRight: '10px', width: '150px' }}>{l}:</Label>
+            <div key={k} className="flex items-center">
+              <Label htmlFor={k} className="mr-2 w-36">{l}:</Label>
               <Input
                 id={k}
                 type="number"
@@ -114,22 +114,22 @@ const BeefTallowCalculator = () => {
                 onChange={e => k === 'o' ? h.o(e.target.value) : k === 'pc' ? h.pc(e.target.value) : setS(p => ({ ...p, [k]: Number(e.target.value) }))}
                 min="0"
                 step={step}
-                style={{ width: '100px' }}
+                className="w-24"
               />
             </div>
           ))}
         </div>
-        <div style={{ marginBottom: '20px' }}>
-          <Label htmlFor="r" style={{ marginRight: '10px' }}>Recipe:</Label>
-          <select id="r" value={s.cr} onChange={e => h.lr(e.target.value)} style={{ marginRight: '10px' }}>
+        <div className="mb-5">
+          <Label htmlFor="r" className="mr-2">Recipe:</Label>
+          <select id="r" value={s.cr} onChange={e => h.lr(e.target.value)} className="mr-2 border rounded px-2 py-1">
             {Object.keys(s.r).map(r => <option key={r} value={r}>{r}</option>)}
           </select>
-          <Input type="text" value={s.rn} onChange={e => setS(p => ({ ...p, rn: e.target.value }))} placeholder="New Recipe Name" style={{ width: '150px', marginRight: '10px' }} />
+          <Input type="text" value={s.rn} onChange={e => setS(p => ({ ...p, rn: e.target.value }))} placeholder="New Recipe Name" className="w-36 mr-2" />
           <Button onClick={h.sr}>Save Recipe</Button>
         </div>
-        <div style={{ marginBottom: '20px' }}>
-          <h3>New Ingredient</h3>
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+        <div className="mb-5">
+          <h3 className="mb-2">New Ingredient</h3>
+          <div className="flex gap-2 mb-2">
             {[
               { k: 'n', p: 'Name', t: 'text' },
               { k: 'p', p: 'Price/kg', t: 'number' },
@@ -137,30 +137,30 @@ const BeefTallowCalculator = () => {
               { k: 'v', p: 'Unit Volume', t: 'number' },
               { k: 'r', p: 'Ratio', t: 'number' }
             ].map(({ k, p, t }) => (
-              <Input key={k} type={t} placeholder={p} value={s.n[k]} onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, [k]: e.target.value } }))} style={{ width: '100px' }} />
+              <Input key={k} type={t} placeholder={p} value={s.n[k]} onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, [k]: e.target.value } }))} className="w-24" />
             ))}
           </div>
           <Button onClick={h.ai}>Add Ingredient</Button>
         </div>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+        <table className="w-full border-collapse mb-5">
           <thead>
             <tr>
-              {['Ingredient', 'Amount', 'Price/kg (€)', 'Unit Price (€)', 'Unit Volume (ml)', 'Ratio', 'Unit Count', 'Cost (€)', 'Actions'].map(h => <th key={h} style={{ border: '1px solid #ddd', padding: '8px' }}>{h}</th>)}
+              {['Ingredient', 'Amount', 'Price/kg (€)', 'Unit Price (€)', 'Unit Volume (ml)', 'Ratio', 'Unit Count', 'Cost (€)', 'Actions'].map(h => <th key={h} className="border border-gray-300 p-2">{h}</th>)}
             </tr>
           </thead>
           <tbody>
             {Object.entries(s.i).map(([k, v]) => (
               <tr key={k}>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{k}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{v.a}</td>
+                <td className="border border-gray-300 p-2">{k}</td>
+                <td className="border border-gray-300 p-2">{v.a}</td>
                 {['p', 'u', 'v', 'r'].map(f => (
-                  <td key={f} style={{ border: '1px solid #ddd', padding: '8px' }}>
-                    <Input type="number" value={v[f]} onChange={e => u(k, f, e.target.value)} min="0" step="0.01" style={{ width: '60px' }} />
+                  <td key={f} className="border border-gray-300 p-2">
+                    <Input type="number" value={v[f]} onChange={e => u(k, f, e.target.value)} min="0" step="0.01" className="w-16" />
                   </td>
                 ))}
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{v.uc}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{v.c?.toFixed(2) ?? '0.00'}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                <td className="border border-gray-300 p-2">{v.uc}</td>
+                <td className="border border-gray-300 p-2">{v.c?.toFixed(2) ?? '0.00'}</td>
+                <td className="border border-gray-300 p-2">
                   <Button onClick={() => h.ri(k)}>Remove</Button>
                 </td>
               </tr>
@@ -168,8 +168,8 @@ const BeefTallowCalculator = () => {
           </tbody>
         </table>
         <div>
-          <h3>Profit Analysis</h3>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <h3 className="mb-2">Profit Analysis</h3>
+          <table className="w-full border-collapse">
             <tbody>
               {[
                 { k: 'pc', l: 'Number of Packages' },
@@ -181,8 +181,8 @@ const BeefTallowCalculator = () => {
                 { k: 'pp', l: 'Profit Percentage' }
               ].map(({ k, l }) => (
                 <tr key={k}>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>{l}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  <td className="border border-gray-300 p-2">{l}</td>
+                  <td className="border border-gray-300 p-2">
                     {k === 'pp' ? `${s.p[k]?.toFixed(2) ?? '0.00'}%` : (s.p[k]?.toFixed(2) ?? '0.00')}
                   </td>
                 </tr>
