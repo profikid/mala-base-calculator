@@ -186,6 +186,19 @@ const BeefTallowCalculator = () => {
     }));
   };
 
+  const TableHeader = ({ label, sortKey }: { label: string; sortKey: string }) => (
+    <th key={sortKey} className="border border-gray-300 p-2">
+      <div className="flex justify-between items-center">
+        {label}
+        {sortKey !== 'actions' && (
+          <button onClick={() => handleSort(sortKey)} className="ml-2">
+            {state.sortColumn === sortKey ? (state.sortDirection === 'asc' ? '↑' : '↓') : '↕'}
+          </button>
+        )}
+      </div>
+    </th>
+  );
+
   const sortedIngredients = useMemo(() => {
     const { sortColumn, sortDirection } = state;
     return Object.entries(state.i).sort(([aKey, a], [bKey, b]) => {
@@ -359,16 +372,7 @@ const BeefTallowCalculator = () => {
                 { label: 'Cost (€)', key: 'cost' },
                 { label: 'Actions', key: 'actions' }
               ].map(({ label, key }) => (
-                <th key={key} className="border border-gray-300 p-2">
-                  <div className="flex justify-between items-center">
-                    {label}
-                    {key !== 'actions' && (
-                      <button onClick={() => handleSort(key)} className="ml-2">
-                        {state.sortColumn === key ? (state.sortDirection === 'asc' ? '↑' : '↓') : '↕'}
-                      </button>
-                    )}
-                  </div>
-                </th>
+                <TableHeader key={key} label={label} sortKey={key} />
               ))}
             </tr>
           </thead>
