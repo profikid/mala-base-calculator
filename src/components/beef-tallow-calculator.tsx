@@ -77,7 +77,7 @@ const BeefTallowCalculator = () => {
     newIngredient: { name: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], unitVolume: 0, ratio: 0 }
   });
 
-  const c = (o: number, d: Record<string, Ingredient>): Record<string, Ingredient> => 
+  const calculateIngredients = (oilAmount: number, ingredients: Record<string, Ingredient>): Record<string, Ingredient> => 
     Object.entries(d).reduce((a: Record<string, Ingredient>, [k, v]) => {
       const g = v.r * o / 2;
       const uc = Math.ceil(g / v.v);
@@ -100,10 +100,10 @@ const BeefTallowCalculator = () => {
       return a;
     }, {});
 
-  const cp = (i: Record<string, Ingredient>, pc: number, pp: number, pac: number) => {
-    const ic = Object.values(i).reduce((s, { c }) => s + (c ?? 0), 0);
-    const tc = ic + pc * pac;
-    const r = pc * pp;
+  const calculateProfit = (ingredients: Record<string, Ingredient>, packageCount: number, packagePrice: number, packagingCost: number) => {
+    const ingredientCost = Object.values(ingredients).reduce((sum, { c }) => sum + (c ?? 0), 0);
+    const totalCost = ingredientCost + packageCount * packagingCost;
+    const revenue = packageCount * packagePrice;
     const pf = r - tc;
     return { 
       pc, 
@@ -121,12 +121,12 @@ const BeefTallowCalculator = () => {
     setState(p => ({ ...p, i, p: cp(i, p.pc, p.pp, p.pac) }));
   }, [state.o, state.pp, state.pc, state.pac, state.d]);
 
-  const u = (k: string, f: string, v: number) => setState(p => {
-    const nd = { ...p.d[k], [f]: Number(v) };
-    if (f === 'p') (nd as any).u = v * nd.v / 1000;
-    else if (f === 'u') (nd as any).p = v * 1000 / nd.v;
-    else if (f === 'v') (nd as any).u = (nd as any).p * v / 1000;
-    return { ...p, d: { ...p.d, [k]: nd } };
+  const updateIngredient = (key: string, field: string, value: number) => setState(prevState => {
+    const updatedIngredient = { ...prevState.d[key], [field]: Number(value) };
+    if (field === 'p') updatedIngredient.u = value * updatedIngredient.v / 1000;
+    else if (field === 'u') updatedIngredient.p = value * 1000 / updatedIngredient.v;
+    else if (field === 'v') updatedIngredient.u = updatedIngredient.p * value / 1000;
+    return { ...prevState, d: { ...prevState.d, [key]: updatedIngredient } };
   });
 
   const handlers = {
