@@ -102,17 +102,18 @@ const BeefTallowCalculator = () => {
 
   const calculateProfit = (ingredients: Record<string, Ingredient>, packageCount: number, packagePrice: number, packagingCost: number) => {
     const ingredientCost = Object.values(ingredients).reduce((sum, { c }) => sum + (c ?? 0), 0);
-    const totalCost = ingredientCost + packageCount * packagingCost;
+    const packagingTotalCost = packageCount * packagingCost;
+    const totalCost = ingredientCost + packagingTotalCost;
     const revenue = packageCount * packagePrice;
-    const pf = r - tc;
+    const profit = revenue - totalCost;
     return { 
-      pc, 
-      ic, 
-      pac: pc * pac, 
-      tc, 
-      r, 
-      pf, 
-      pp: r > 0 ? (pf / r * 100) : 0 
+      pc: packageCount, 
+      ic: ingredientCost, 
+      pac: packagingTotalCost, 
+      tc: totalCost, 
+      r: revenue, 
+      pf: profit, 
+      pp: revenue > 0 ? (profit / revenue * 100) : 0 
     };
   };
 
