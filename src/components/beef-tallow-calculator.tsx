@@ -129,7 +129,7 @@ const BeefTallowCalculator = () => {
         </div>
         <div className="mb-5">
           <h3 className="mb-2">New Ingredient</h3>
-          <div className="flex gap-2 mb-2">
+          <div className="grid grid-cols-5 gap-2 mb-2">
             {[
               { k: 'n', p: 'Name', t: 'text' },
               { k: 'p', p: 'Price/kg', t: 'number' },
@@ -137,7 +137,17 @@ const BeefTallowCalculator = () => {
               { k: 'v', p: 'Unit Volume', t: 'number' },
               { k: 'r', p: 'Ratio', t: 'number' }
             ].map(({ k, p, t }) => (
-              <Input key={k} type={t} placeholder={p} value={s.n[k]} onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, [k]: e.target.value } }))} className="w-24" />
+              <div key={k} className="flex flex-col">
+                <Label htmlFor={`new-${k}`} className="mb-1">{p}</Label>
+                <Input
+                  id={`new-${k}`}
+                  type={t}
+                  placeholder={p}
+                  value={s.n[k]}
+                  onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, [k]: e.target.value } }))}
+                  className="w-full"
+                />
+              </div>
             ))}
           </div>
           <Button onClick={h.ai}>Add Ingredient</Button>
