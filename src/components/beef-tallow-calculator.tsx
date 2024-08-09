@@ -86,7 +86,7 @@ interface State {
 
 const BeefTallowCalculator = () => {
   const [state, setState] = useState<State>({ 
-    o: 2, pp: 23, pc: 8, pac: 0.36, 
+    o: 1.25 , pp: 23, pc: 10, pac: 0.36, 
     d: initData, 
     i: {}, 
     p: { pc: 0, ic: 0, pac: 0, tc: 0, r: 0, pf: 0, pp: 0, ucs: 0 }, 
@@ -164,7 +164,7 @@ const BeefTallowCalculator = () => {
     },
     updatePackageCount: (value: string) => { 
       const newCount = Number(value); 
-      setState(prev => ({ ...prev, pc: newCount, o: newCount / 4 })); 
+      setState(prev => ({ ...prev, pc: newCount, o: newCount / 8 })); 
     },
     addIngredient: () => {
       const { n, suppliers, v, r } = state.n;
