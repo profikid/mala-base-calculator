@@ -107,7 +107,16 @@ const BeefTallowCalculator = () => {
     const totalCost = ingredientCost + packagingTotalCost;
     const revenue = packageCount * packagePrice;
     const profit = revenue - totalCost;
-    const unitCostSum = Object.values(ingredients).reduce((sum, { currentPrice, uc }) => sum + ((currentPrice ?? 0) * (uc ?? 0)), 0);
+    const unitCostSum = Object.values(ingredients).reduce((sum, { suppliers, currentSupplier, uc }) => {
+      const supplier = suppliers.find(s => s.name === currentSupplier);
+      if (supplier) {
+        const price = supplier.prices.reduce((bestPrice, tier) => {
+          return tier.kg <= (uc ?? 0) ? tier.price : bestPrice;
+        }, supplier.prices[0].price);
+        return sum + (price * (uc ?? 0));
+      }
+      return sum;
+    }, 0);
     const profitFromUnitCostSum = revenue - unitCostSum;
     return { 
       pc: packageCount, 
