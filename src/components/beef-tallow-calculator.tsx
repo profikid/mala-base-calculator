@@ -411,6 +411,7 @@ const BeefTallowCalculator = () => {
                 { label: 'Unit Volume (gr or ml)', key: 'unitVolume' },
                 { label: 'Ratio', key: 'ratio' },
                 { label: 'Unit Count', key: 'unitCount' },
+                { label: 'Total Unit Cost (€)', key: 'totalUnitCost' },
                 { label: 'Cost (€)', key: 'cost' },
                 { label: 'Actions', key: 'actions' }
               ].map(({ label, key }) => (
@@ -441,6 +442,7 @@ const BeefTallowCalculator = () => {
                   <Input type="number" value={v.r} onChange={e => updateIngredient(k, 'r', e.target.value)} min="0" step="0.01" className="w-full" />
                 </td>
                 <td className="border border-gray-300 p-2">{v.uc}</td>
+                <td className="border border-gray-300 p-2">{(((v.currentPrice ?? 0) * v.v / 1000) * (v.uc ?? 0)).toFixed(2)} €</td>
                 <td className="border border-gray-300 p-2">{v.c?.toFixed(2) ?? '0.00'}</td>
                 <td className="border border-gray-300 p-2">
                   <Button onClick={() => handlers.removeIngredient(k)}>Remove</Button>
