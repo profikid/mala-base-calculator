@@ -111,8 +111,8 @@ const BeefTallowCalculator = () => {
       const supplier = suppliers.find(s => s.name === currentSupplier);
       if (supplier) {
         const price = supplier.prices.reduce((bestPrice, tier) => {
-          return tier.kg <= (uc ?? 0) ? tier.price : bestPrice;
-        }, supplier.prices[0].price);
+          return tier.kg <= (uc ?? 0) ? tier.price / tier.kg : bestPrice;
+        }, supplier.prices[0].price / supplier.prices[0].kg);
         return sum + (price * (uc ?? 0));
       }
       return sum;
