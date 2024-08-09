@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 const Card = ({ children, className = "" }) => <div className={`bg-white shadow rounded-lg p-6 ${className}`}>{children}</div>;
 const CardHeader = ({ children, className = "" }) => <div className={`mb-4 ${className}`}>{children}</div>;
 const CardContent = ({ children, className = "" }) => <div className={className}>{children}</div>;
@@ -19,7 +19,9 @@ const BeefTallowCalculator = () => {
     n: { n: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], v: 0, r: 0 }, 
     rn: '', 
     r: { 'Default': initData }, 
-    cr: 'Default' 
+    cr: 'Default',
+    sortColumn: '',
+    sortDirection: 'asc'
   });
 
   const c = (o, d) => Object.entries(d).reduce((a, [k, v]) => {
@@ -106,6 +108,52 @@ const BeefTallowCalculator = () => {
       });
     }
   };
+
+  const handleSort = (column) => {
+    setS(prev => ({
+      ...prev,
+      sortColumn: column,
+      sortDirection: prev.sortColumn === column && prev.sortDirection === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  const sortedIngredients = useMemo(() => {
+    const { sortColumn, sortDirection } = s;
+    return Object.entries(s.i).sort(([aKey, a], [bKey, b]) => {
+      let aValue, bValue;
+      switch (sortColumn) {
+        case 'ingredient':
+          [aValue, bValue] = [aKey, bKey];
+          break;
+        case 'amount':
+          [aValue, bValue] = [parseFloat(a.a), parseFloat(b.a)];
+          break;
+        case 'currentSupplier':
+          [aValue, bValue] = [a.currentSupplier, b.currentSupplier];
+          break;
+        case 'currentPrice':
+          [aValue, bValue] = [a.currentPrice, b.currentPrice];
+          break;
+        case 'unitVolume':
+          [aValue, bValue] = [a.v, b.v];
+          break;
+        case 'ratio':
+          [aValue, bValue] = [a.r, b.r];
+          break;
+        case 'unitCount':
+          [aValue, bValue] = [a.uc, b.uc];
+          break;
+        case 'cost':
+          [aValue, bValue] = [a.c, b.c];
+          break;
+        default:
+          return 0;
+      }
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [s.i, s.sortColumn, s.sortDirection]);
 
   return (
     <Card>
@@ -231,11 +279,32 @@ const BeefTallowCalculator = () => {
         <table className="w-full border-collapse mb-5">
           <thead>
             <tr>
-              {['Ingredient', 'Amount', 'Current Supplier', 'Current Price/kg (€)', 'Unit Volume (gr or ml)', 'Ratio', 'Unit Count', 'Cost (€)', 'Actions'].map(h => <th key={h} className="border border-gray-300 p-2">{h}</th>)}
+              {[
+                { label: 'Ingredient', key: 'ingredient' },
+                { label: 'Amount', key: 'amount' },
+                { label: 'Current Supplier', key: 'currentSupplier' },
+                { label: 'Current Price/kg (€)', key: 'currentPrice' },
+                { label: 'Unit Volume (gr or ml)', key: 'unitVolume' },
+                { label: 'Ratio', key: 'ratio' },
+                { label: 'Unit Count', key: 'unitCount' },
+                { label: 'Cost (€)', key: 'cost' },
+                { label: 'Actions', key: 'actions' }
+              ].map(({ label, key }) => (
+                <th key={key} className="border border-gray-300 p-2">
+                  <div className="flex justify-between items-center">
+                    {label}
+                    {key !== 'actions' && (
+                      <button onClick={() => handleSort(key)} className="ml-2">
+                        {s.sortColumn === key ? (s.sortDirection === 'asc' ? '↑' : '↓') : '↕'}
+                      </button>
+                    )}
+                  </div>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {Object.entries(s.i).map(([k, v]) => (
+            {sortedIngredients.map(([k, v]) => (
               <tr key={k}>
                 <td className="border border-gray-300 p-2">
                   <Input type="text" value={k} onChange={e => h.updateIngredientName(k, e.target.value)} className="w-full" />
