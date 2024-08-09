@@ -8,28 +8,7 @@ const Button = ({ children, className = "", ...props }) => <button className={`b
 const Input = ({ className = "", ...props }) => <input className={`border rounded px-2 py-1 ${className}`} {...props} />;
 const Label = ({ children, className = "", ...props }) => <label className={`block mb-2 ${className}`} {...props}>{children}</label>;
 const Select = ({ className = "", ...props }) => <select className={`border rounded px-2 py-1 ${className}`} {...props} />;
-
-const initData = {
-  'Dried chilies': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 20 }, { kg: 5, price: 20 }] }], v: 250, r: 400 },
-  'Sichuan pepper': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 30 }, { kg: 3, price: 30 }] }], v: 100, r: 60 },
-  'Shaoxing wine': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 10 }, { kg: 5, price: 10 }] }], v: 500, r: 240 },
-  'Beef tallow': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 15 }, { kg: 7.5, price: 15 }] }], v: 500, r: 800 },
-  'Rapeseed oil': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 8 }, { kg: 4, price: 8 }] }], v: 500, r: 200 },
-  'Star anise': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 25 }, { kg: 2.5, price: 25 }] }], v: 100, r: 8 },
-  'Cassia cinnamon': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 20 }, { kg: 2, price: 20 }] }], v: 100, r: 16 },
-  'Bay leaves': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 15 }, { kg: 1.5, price: 15 }] }], v: 100, r: 4.8 },
-  'Chinese black cardamom': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 40 }, { kg: 4, price: 40 }] }], v: 100, r: 12 },
-  'White cardamom': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 35 }, { kg: 3.5, price: 35 }] }], v: 100, r: 4 },
-  'Fennel seeds': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 18 }, { kg: 1.8, price: 18 }] }], v: 100, r: 20 },
-  'Onion': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 2 }, { kg: 0.5, price: 2 }] }], v: 250, r: 300 },
-  'Scallions': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 5 }, { kg: 1, price: 5 }] }], v: 200, r: 300 },
-  'Cilantro': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 8 }, { kg: 1.6, price: 8 }] }], v: 200, r: 40 },
-  'Ginger': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 6 }, { kg: 1.5, price: 6 }] }], v: 250, r: 120 },
-  'Sichuan chilli bean paste': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 25 }, { kg: 5, price: 25 }] }], v: 200, r: 200 },
-  'Fermented black beans': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 15 }, { kg: 3, price: 15 }] }], v: 200, r: 64 },
-  'Rock sugar': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 5 }, { kg: 1, price: 5 }] }], v: 200, r: 48 },
-  'Orange peel': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 10 }, { kg: 2, price: 10 }] }], v: 100, r: 20 }
-};
+import { initData } from '@/lib/recipe';
 
 const BeefTallowCalculator = () => {
   const [s, setS] = useState({ 
@@ -252,7 +231,7 @@ const BeefTallowCalculator = () => {
         <table className="w-full border-collapse mb-5">
           <thead>
             <tr>
-              {['Ingredient', 'Amount', 'Current Supplier', 'Current Price/kg (€)', 'Unit Volume (ml)', 'Ratio', 'Unit Count', 'Cost (€)', 'Actions'].map(h => <th key={h} className="border border-gray-300 p-2">{h}</th>)}
+              {['Ingredient', 'Amount', 'Current Supplier', 'Current Price/kg (€)', 'Unit Volume (gr or ml)', 'Ratio', 'Unit Count', 'Cost (€)', 'Actions'].map(h => <th key={h} className="border border-gray-300 p-2">{h}</th>)}
             </tr>
           </thead>
           <tbody>
