@@ -361,6 +361,30 @@ const BeefTallowCalculator = () => {
           </div>
           <Button onClick={handlers.addIngredient}>Add Ingredient</Button>
         </div>
+        <div className="mb-5">
+          <h3 className="mb-2">Profit Analysis</h3>
+          <table className="w-full border-collapse">
+            <tbody>
+              {[
+                { k: 'pc', l: 'Number of Packages' },
+                { k: 'ic', l: 'Ingredient Cost (€)' },
+                { k: 'pac', l: 'Packaging Cost (€)' },
+                { k: 'tc', l: 'Total Cost (€)' },
+                { k: 'r', l: 'Revenue (€)' },
+                { k: 'pf', l: 'Profit (€)' },
+                { k: 'pp', l: 'Profit Percentage' },
+                { k: 'ucs', l: 'Unit Cost Sum (€)' }
+              ].map(({ k, l }) => (
+                <tr key={k}>
+                  <td className="border border-gray-300 p-2">{l}</td>
+                  <td className="border border-gray-300 p-2">
+                    {k === 'pp' ? `${state.p[k]?.toFixed(2) ?? '0.00'}%` : (state.p[k]?.toFixed(2) ?? '0.00')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <table className="w-full border-collapse mb-5">
           <thead>
             <tr>
@@ -409,30 +433,6 @@ const BeefTallowCalculator = () => {
             ))}
           </tbody>
         </table>
-        <div>
-          <h3 className="mb-2">Profit Analysis</h3>
-          <table className="w-full border-collapse">
-            <tbody>
-              {[
-                { k: 'pc', l: 'Number of Packages' },
-                { k: 'ic', l: 'Ingredient Cost (€)' },
-                { k: 'pac', l: 'Packaging Cost (€)' },
-                { k: 'tc', l: 'Total Cost (€)' },
-                { k: 'r', l: 'Revenue (€)' },
-                { k: 'pf', l: 'Profit (€)' },
-                { k: 'pp', l: 'Profit Percentage' },
-                { k: 'ucs', l: 'Unit Cost Sum (€)' }
-              ].map(({ k, l }) => (
-                <tr key={k}>
-                  <td className="border border-gray-300 p-2">{l}</td>
-                  <td className="border border-gray-300 p-2">
-                    {k === 'pp' ? `${state.p[k]?.toFixed(2) ?? '0.00'}%` : (state.p[k]?.toFixed(2) ?? '0.00')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </CardContent>
     </Card>
   );
