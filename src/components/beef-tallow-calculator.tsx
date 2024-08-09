@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 const Card = ({ children }) => <div className="bg-white shadow rounded-lg p-6">{children}</div>;
 const CardHeader = ({ children }) => <div className="mb-4">{children}</div>;
