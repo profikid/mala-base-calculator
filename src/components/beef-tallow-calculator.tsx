@@ -125,50 +125,50 @@ const BeefTallowCalculator = () => {
   const handlers = {
     updateOilAmount: (value: string) => { 
       const newAmount = Number(value); 
-      setState(prev => ({ ...prev, oilAmount: newAmount, packageCount: Math.floor(newAmount * 4) })); 
+      setState(prev => ({ ...prev, o: newAmount, pc: Math.floor(newAmount * 4) })); 
     },
     updatePackageCount: (value: string) => { 
       const newCount = Number(value); 
-      setState(prev => ({ ...prev, packageCount: newCount, oilAmount: newCount / 4 })); 
+      setState(prev => ({ ...prev, pc: newCount, o: newCount / 4 })); 
     },
     addIngredient: () => {
-      const { name, suppliers, unitVolume, ratio } = state.newIngredient;
-      if (name && suppliers.length > 0 && unitVolume && ratio) {
+      const { n, suppliers, v, r } = state.n;
+      if (n && suppliers.length > 0 && v && r) {
         setState(prev => ({ 
           ...prev, 
-          data: { ...prev.data, [name]: { suppliers, v: Number(unitVolume), r: Number(ratio) } }, 
-          newIngredient: { name: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], unitVolume: 0, ratio: 0 } 
+          d: { ...prev.d, [n]: { suppliers, v: Number(v), r: Number(r) } }, 
+          n: { n: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], v: 0, r: 0 } 
         }));
       }
     },
     removeIngredient: (key: string) => setState(prev => { 
-      const newData = { ...prev.data }; 
-      delete newData[key]; 
-      return { ...prev, data: newData }; 
+      const newD = { ...prev.d }; 
+      delete newD[key]; 
+      return { ...prev, d: newD }; 
     }),
-    saveRecipe: () => state.recipeName && setState(prev => ({ 
+    saveRecipe: () => state.rn && setState(prev => ({ 
       ...prev, 
-      recipes: { ...prev.recipes, [prev.recipeName]: prev.data }, 
-      recipeName: '' 
+      r: { ...prev.r, [prev.rn]: prev.d }, 
+      rn: '' 
     })),
-    loadRecipe: (name: string) => setState(prev => ({ ...prev, data: prev.recipes[name], currentRecipe: name })),
+    loadRecipe: (name: string) => setState(prev => ({ ...prev, d: prev.r[name], cr: name })),
     updateIngredientName: (oldName: string, newName: string) => {
       setState(prev => {
-        const newData = { ...prev.data };
-        newData[newName] = newData[oldName];
-        delete newData[oldName];
-        return { ...prev, data: newData };
+        const newD = { ...prev.d };
+        newD[newName] = newD[oldName];
+        delete newD[oldName];
+        return { ...prev, d: newD };
       });
     },
     updateSupplier: (ingredient: string, supplierName: string) => {
       setState(prev => {
-        const newData = { ...prev.data };
-        const supplier = newData[ingredient].suppliers.find(s => s.name === supplierName);
+        const newD = { ...prev.d };
+        const supplier = newD[ingredient].suppliers.find(s => s.name === supplierName);
         if (supplier) {
-          newData[ingredient].currentSupplier = supplierName;
-          newData[ingredient].currentPrice = supplier.prices[0].price; // Default to first price
+          newD[ingredient].currentSupplier = supplierName;
+          newD[ingredient].currentPrice = supplier.prices[0].price; // Default to first price
         }
-        return { ...prev, data: newData };
+        return { ...prev, d: newD };
       });
     }
   };
@@ -217,7 +217,7 @@ const BeefTallowCalculator = () => {
       if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [s.i, s.sortColumn, s.sortDirection]);
+  }, [state.i, state.sortColumn, state.sortDirection]);
 
   return (
     <Card>
