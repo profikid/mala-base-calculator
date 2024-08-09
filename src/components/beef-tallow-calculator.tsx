@@ -270,7 +270,7 @@ const BeefTallowCalculator = () => {
   return (
     <Card>
       <CardHeader>
-        <h2>Mala Base Calculator</h2>
+        <h2>Beef Tallow Calculator</h2>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-2 mb-5">
