@@ -114,7 +114,7 @@ const BeefTallowCalculator = () => {
                 onChange={e => k === 'o' ? h.o(e.target.value) : k === 'pc' ? h.pc(e.target.value) : setS(p => ({ ...p, [k]: Number(e.target.value) }))}
                 min="0"
                 step={step}
-                className="w-24"
+                className="w-full"
               />
             </div>
           ))}
@@ -165,7 +165,7 @@ const BeefTallowCalculator = () => {
                 <td className="border border-gray-300 p-2">{v.a}</td>
                 {['p', 'u', 'v', 'r'].map(f => (
                   <td key={f} className="border border-gray-300 p-2">
-                    <Input type="number" value={v[f]} onChange={e => u(k, f, e.target.value)} min="0" step="0.01" className="w-16" />
+                    <Input type="number" value={v[f]} onChange={e => u(k, f, e.target.value)} min="0" step="0.01" className="w-full" />
                   </td>
                 ))}
                 <td className="border border-gray-300 p-2">{v.uc}</td>
