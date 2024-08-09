@@ -70,30 +70,31 @@ const BeefTallowCalculator = () => {
     sortDirection: 'asc'
   });
 
-  const c = (o: number, d: Record<string, any>) => Object.entries(d).reduce((a: Record<string, any>, [k, v]) => {
-    const g = v.r * o / 2;
-    const uc = Math.ceil(g / v.v);
-    const bestPrice = v.suppliers.reduce((best, supplier) => {
-      const applicablePrice = supplier.prices.reduce((p, tier) => {
-        const pricePerKg = tier.price / tier.kg;
-        return tier.kg <= g/1000 ? pricePerKg : p;
-      }, supplier.prices[0].price / supplier.prices[0].kg);
-      return applicablePrice < best.price ? { price: applicablePrice, supplier: supplier.name } : best;
-    }, { price: Infinity, supplier: '' });
-    a[k] = { 
-      a: `${g.toFixed(2)} g`, 
-      g, 
-      c: g / 1000 * bestPrice.price, 
-      uc, 
-      ...v, 
-      currentSupplier: bestPrice.supplier,
-      currentPrice: bestPrice.price
-    };
-    return a;
-  }, {});
+  const c = (o: number, d: Record<string, Ingredient>): Record<string, Ingredient> => 
+    Object.entries(d).reduce((a: Record<string, Ingredient>, [k, v]) => {
+      const g = v.r * o / 2;
+      const uc = Math.ceil(g / v.v);
+      const bestPrice = v.suppliers.reduce((best, supplier) => {
+        const applicablePrice = supplier.prices.reduce((p, tier) => {
+          const pricePerKg = tier.price / tier.kg;
+          return tier.kg <= g/1000 ? pricePerKg : p;
+        }, supplier.prices[0].price / supplier.prices[0].kg);
+        return applicablePrice < best.price ? { price: applicablePrice, supplier: supplier.name } : best;
+      }, { price: Infinity, supplier: '' });
+      a[k] = { 
+        ...v,
+        a: `${g.toFixed(2)} g`, 
+        g, 
+        c: g / 1000 * bestPrice.price, 
+        uc, 
+        currentSupplier: bestPrice.supplier,
+        currentPrice: bestPrice.price
+      };
+      return a;
+    }, {});
 
-  const cp = (i, pc, pp, pac) => {
-    const ic = Object.values(i).reduce((s, { c }) => s + c, 0);
+  const cp = (i: Record<string, Ingredient>, pc: number, pp: number, pac: number) => {
+    const ic = Object.values(i).reduce((s, { c }) => s + (c ?? 0), 0);
     const tc = ic + pc * pac;
     const r = pc * pp;
     const pf = r - tc;
@@ -113,11 +114,11 @@ const BeefTallowCalculator = () => {
     setS(p => ({ ...p, i, p: cp(i, p.pc, p.pp, p.pac) }));
   }, [s.o, s.pp, s.pc, s.pac, s.d]);
 
-  const u = (k, f, v) => setS(p => {
+  const u = (k: string, f: string, v: number) => setS(p => {
     const nd = { ...p.d[k], [f]: Number(v) };
-    if (f === 'p') nd.u = v * nd.v / 1000;
-    else if (f === 'u') nd.p = v * 1000 / nd.v;
-    else if (f === 'v') nd.u = nd.p * v / 1000;
+    if (f === 'p') (nd as any).u = v * nd.v / 1000;
+    else if (f === 'u') (nd as any).p = v * 1000 / nd.v;
+    else if (f === 'v') (nd as any).u = (nd as any).p * v / 1000;
     return { ...p, d: { ...p.d, [k]: nd } };
   });
 
