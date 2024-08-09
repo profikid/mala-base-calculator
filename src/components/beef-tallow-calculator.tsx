@@ -18,6 +18,19 @@ const TABLE_HEADERS = [
   { label: 'Actions', key: 'actions' }
 ];
 
+const PROFIT_ANALYSIS_ITEMS = [
+  { k: 'pc', l: 'Number of Packages' },
+  { k: 'ic', l: 'Ingredient Cost (€)' },
+  { k: 'pac', l: 'Packaging Cost (€)' },
+  { k: 'tc', l: 'Total Cost (€)' },
+  { k: 'r', l: 'Revenue (€)' },
+  { k: 'pf', l: 'Profit (€)' },
+  { k: 'pp', l: 'Profit Percentage' },
+  { k: 'tucs', l: 'Total Unit Cost Sum (€)', f: (v: number) => v.toFixed(2) },
+  { k: 'pftucs', l: 'Profit from Total Unit Cost Sum (€)', f: (v: number) => v.toFixed(2) },
+  { k: 'pptucs', l: 'Profit Percentage from Total Unit Cost Sum', f: (v: number) => `${v.toFixed(2)}%` }
+];
+
 interface Supplier {
   name: string;
   prices: { kg: number; price: number }[];
@@ -379,18 +392,7 @@ const BeefTallowCalculator = () => {
           <h3 className="mb-2">Profit Analysis</h3>
           <table className="w-full border-collapse">
             <tbody>
-              {[
-                { k: 'pc', l: 'Number of Packages' },
-                { k: 'ic', l: 'Ingredient Cost (€)' },
-                { k: 'pac', l: 'Packaging Cost (€)' },
-                { k: 'tc', l: 'Total Cost (€)' },
-                { k: 'r', l: 'Revenue (€)' },
-                { k: 'pf', l: 'Profit (€)' },
-                { k: 'pp', l: 'Profit Percentage' },
-                { k: 'tucs', l: 'Total Unit Cost Sum (€)', f: (v) => v.toFixed(2) },
-                { k: 'pftucs', l: 'Profit from Total Unit Cost Sum (€)', f: (v) => v.toFixed(2) },
-                { k: 'pptucs', l: 'Profit Percentage from Total Unit Cost Sum', f: (v) => `${v.toFixed(2)}%` }
-              ].map((item) => (
+              {PROFIT_ANALYSIS_ITEMS.map((item) => (
                 <tr key={item.k}>
                   <td className="border border-gray-300 p-2">{item.l}</td>
                   <td className="border border-gray-300 p-2">
