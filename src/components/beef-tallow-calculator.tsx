@@ -122,11 +122,8 @@ const BeefTallowCalculator = () => {
     setState(p => ({ ...p, i, p: calculateProfit(i, p.pc, p.pp, p.pac) }));
   }, [state.o, state.pp, state.pc, state.pac, state.d]);
 
-  const updateIngredient = (key: string, field: string, value: number) => setState(prevState => {
+  const updateIngredient = (key: string, field: string, value: string) => setState(prevState => {
     const updatedIngredient = { ...prevState.d[key], [field]: Number(value) };
-    if (field === 'p') updatedIngredient.u = value * updatedIngredient.v / 1000;
-    else if (field === 'u') updatedIngredient.p = value * 1000 / updatedIngredient.v;
-    else if (field === 'v') updatedIngredient.u = updatedIngredient.p * value / 1000;
     return { ...prevState, d: { ...prevState.d, [key]: updatedIngredient } };
   });
 
@@ -391,10 +388,10 @@ const BeefTallowCalculator = () => {
                 </td>
                 <td className="border border-gray-300 p-2">{v.currentPrice.toFixed(2)} €/kg</td>
                 <td className="border border-gray-300 p-2">
-                  <Input type="number" value={v.v} onChange={e => u(k, 'v', e.target.value)} min="0" step="0.01" className="w-full" />
+                  <Input type="number" value={v.v} onChange={e => updateIngredient(k, 'v', e.target.value)} min="0" step="0.01" className="w-full" />
                 </td>
                 <td className="border border-gray-300 p-2">
-                  <Input type="number" value={v.r} onChange={e => u(k, 'r', e.target.value)} min="0" step="0.01" className="w-full" />
+                  <Input type="number" value={v.r} onChange={e => updateIngredient(k, 'r', e.target.value)} min="0" step="0.01" className="w-full" />
                 </td>
                 <td className="border border-gray-300 p-2">{v.uc}</td>
                 <td className="border border-gray-300 p-2">{v.c?.toFixed(2) ?? '0.00'}</td>
