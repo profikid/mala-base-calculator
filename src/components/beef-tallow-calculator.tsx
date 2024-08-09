@@ -407,6 +407,7 @@ const BeefTallowCalculator = () => {
                 { label: 'Amount', key: 'amount' },
                 { label: 'Current Supplier', key: 'currentSupplier' },
                 { label: 'Current Price/kg (€)', key: 'currentPrice' },
+                { label: 'Unit Price (€)', key: 'unitPrice' },
                 { label: 'Unit Volume (gr or ml)', key: 'unitVolume' },
                 { label: 'Ratio', key: 'ratio' },
                 { label: 'Unit Count', key: 'unitCount' },
@@ -432,6 +433,7 @@ const BeefTallowCalculator = () => {
                   </Select>
                 </td>
                 <td className="border border-gray-300 p-2">{v.currentPrice?.toFixed(2) ?? '0.00'} €/kg</td>
+                <td className="border border-gray-300 p-2">{((v.currentPrice ?? 0) * v.v / 1000).toFixed(2)} €</td>
                 <td className="border border-gray-300 p-2">
                   <Input type="number" value={v.v} onChange={e => updateIngredient(k, 'v', e.target.value)} min="0" step="0.01" className="w-full" />
                 </td>
