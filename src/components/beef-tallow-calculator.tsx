@@ -7,6 +7,7 @@ const CardContent = ({ children, className = "" }) => <div className={className}
 const Button = ({ children, className = "", ...props }) => <button className={`bg-blue-500 text-white px-4 py-2 rounded ${className}`} {...props}>{children}</button>;
 const Input = ({ className = "", ...props }) => <input className={`border rounded px-2 py-1 ${className}`} {...props} />;
 const Label = ({ children, className = "", ...props }) => <label className={`block mb-2 ${className}`} {...props}>{children}</label>;
+const Select = ({ className = "", ...props }) => <select className={`border rounded px-2 py-1 ${className}`} {...props} />;
 
 const initData = {
   'Dried chilies': { suppliers: [{ name: 'Default', prices: [{ kg: 1, price: 20 }, { kg: 5, price: 20 }] }], v: 250, r: 400 },
@@ -105,7 +106,26 @@ const BeefTallowCalculator = () => {
     },
     ri: k => setS(p => { const nd = { ...p.d }; delete nd[k]; return { ...p, d: nd }; }),
     sr: () => s.rn && setS(p => ({ ...p, r: { ...p.r, [p.rn]: p.d }, rn: '' })),
-    lr: n => setS(p => ({ ...p, d: p.r[n], cr: n }))
+    lr: n => setS(p => ({ ...p, d: p.r[n], cr: n })),
+    updateIngredientName: (oldName, newName) => {
+      setS(p => {
+        const newD = { ...p.d };
+        newD[newName] = newD[oldName];
+        delete newD[oldName];
+        return { ...p, d: newD };
+      });
+    },
+    updateSupplier: (ingredient, supplierName) => {
+      setS(p => {
+        const newD = { ...p.d };
+        const supplier = newD[ingredient].suppliers.find(s => s.name === supplierName);
+        if (supplier) {
+          newD[ingredient].currentSupplier = supplierName;
+          newD[ingredient].currentPrice = supplier.prices[0].price; // Default to first price
+        }
+        return { ...p, d: newD };
+      });
+    }
   };
 
   return (
@@ -238,9 +258,17 @@ const BeefTallowCalculator = () => {
           <tbody>
             {Object.entries(s.i).map(([k, v]) => (
               <tr key={k}>
-                <td className="border border-gray-300 p-2">{k}</td>
+                <td className="border border-gray-300 p-2">
+                  <Input type="text" value={k} onChange={e => h.updateIngredientName(k, e.target.value)} className="w-full" />
+                </td>
                 <td className="border border-gray-300 p-2">{v.a}</td>
-                <td className="border border-gray-300 p-2">{v.currentSupplier}</td>
+                <td className="border border-gray-300 p-2">
+                  <Select value={v.currentSupplier} onChange={e => h.updateSupplier(k, e.target.value)} className="w-full">
+                    {v.suppliers.map(supplier => (
+                      <option key={supplier.name} value={supplier.name}>{supplier.name}</option>
+                    ))}
+                  </Select>
+                </td>
                 <td className="border border-gray-300 p-2">{v.currentPrice.toFixed(2)}</td>
                 <td className="border border-gray-300 p-2">
                   <Input type="number" value={v.v} onChange={e => u(k, 'v', e.target.value)} min="0" step="0.01" className="w-full" />
