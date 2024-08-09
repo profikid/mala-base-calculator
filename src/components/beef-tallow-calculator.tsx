@@ -382,11 +382,11 @@ const BeefTallowCalculator = () => {
                 { k: 'tucs', l: 'Total Unit Cost Sum (€)', f: (v) => v.toFixed(2) },
                 { k: 'pftucs', l: 'Profit from Total Unit Cost Sum (€)', f: (v) => v.toFixed(2) },
                 { k: 'pptucs', l: 'Profit Percentage from Total Unit Cost Sum', f: (v) => `${v.toFixed(2)}%` }
-              ].map(({ k, l }) => (
-                <tr key={k}>
-                  <td className="border border-gray-300 p-2">{l}</td>
+              ].map((item) => (
+                <tr key={item.k}>
+                  <td className="border border-gray-300 p-2">{item.l}</td>
                   <td className="border border-gray-300 p-2">
-                    {item.f ? item.f(state.p[k] ?? 0) : (state.p[k]?.toFixed(2) ?? '0.00')}
+                    {item.f ? item.f(state.p[item.k] ?? 0) : (state.p[item.k]?.toFixed(2) ?? '0.00')}
                   </td>
                 </tr>
               ))}
