@@ -216,12 +216,14 @@ const BeefTallowCalculator = () => {
     }));
   };
 
+  const sortButtonStyle = "ml-2";
+
   const TableHeader = ({ label, sortKey }: { label: string; sortKey: string }) => (
     <th key={sortKey} className="border border-gray-300 p-2">
       <div className="flex justify-between items-center">
         {label}
         {sortKey !== 'actions' && (
-          <button onClick={() => handleSort(sortKey)} className="ml-2">
+          <button onClick={() => handleSort(sortKey)} className={sortButtonStyle}>
             {state.sortColumn === sortKey ? (state.sortDirection === 'asc' ? '↑' : '↓') : '↕'}
           </button>
         )}
