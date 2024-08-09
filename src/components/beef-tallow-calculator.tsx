@@ -117,8 +117,8 @@ const BeefTallowCalculator = () => {
   };
 
   useEffect(() => {
-    const i = c(state.o, state.d);
-    setState(p => ({ ...p, i, p: cp(i, p.pc, p.pp, p.pac) }));
+    const i = calculateIngredients(state.o, state.d);
+    setState(p => ({ ...p, i, p: calculateProfit(i, p.pc, p.pp, p.pac) }));
   }, [state.o, state.pp, state.pc, state.pac, state.d]);
 
   const updateIngredient = (key: string, field: string, value: number) => setState(prevState => {
