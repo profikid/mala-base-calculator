@@ -89,7 +89,7 @@ const BeefTallowCalculator = () => {
     o: 2, pp: 23, pc: 8, pac: 0.36, 
     d: initData, 
     i: {}, 
-    p: { pc: 0, ic: 0, pac: 0, tc: 0, r: 0, pf: 0, pp: 0 }, 
+    p: { pc: 0, ic: 0, pac: 0, tc: 0, r: 0, pf: 0, pp: 0, ucs: 0 }, 
     n: { n: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], v: 0, r: 0 }, 
     rn: '', 
     r: { 'Default': initData }, 
