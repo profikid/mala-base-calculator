@@ -107,7 +107,7 @@ const BeefTallowCalculator = () => {
     const totalCost = ingredientCost + packagingTotalCost;
     const revenue = packageCount * packagePrice;
     const profit = revenue - totalCost;
-    const unitCostSum = Object.values(ingredients).reduce((sum, { c }) => sum + (c ?? 0), 0);
+    const productCostSum = Object.values(ingredients).reduce((sum, { c }) => sum + (c ?? 0), 0);
     const profitFromUnitCostSum = revenue - unitCostSum;
     return { 
       pc: packageCount, 
@@ -117,9 +117,9 @@ const BeefTallowCalculator = () => {
       r: revenue, 
       pf: profit, 
       pp: revenue > 0 ? (profit / revenue * 100) : 0,
-      ucs: unitCostSum,
-      pfucs: profitFromUnitCostSum,
-      ppucs: revenue > 0 ? (profitFromUnitCostSum / revenue * 100) : 0
+      pcs: productCostSum,
+      pfpcs: profitFromProductCostSum,
+      pppcs: revenue > 0 ? (profitFromProductCostSum / revenue * 100) : 0
     };
   };
 
@@ -376,14 +376,14 @@ const BeefTallowCalculator = () => {
                 { k: 'r', l: 'Revenue (€)' },
                 { k: 'pf', l: 'Profit (€)' },
                 { k: 'pp', l: 'Profit Percentage' },
-                { k: 'ucs', l: 'Total Ingredient Cost (€)' },
-                { k: 'pfucs', l: 'Profit from Unit Cost Sum (€)' },
-                { k: 'ppucs', l: 'Profit Percentage from Unit Cost Sum' }
+                { k: 'pcs', l: 'Total Product Cost (€)' },
+                { k: 'pfpcs', l: 'Profit from Product Cost Sum (€)' },
+                { k: 'pppcs', l: 'Profit Percentage from Product Cost Sum' }
               ].map(({ k, l }) => (
                 <tr key={k}>
                   <td className="border border-gray-300 p-2">{l}</td>
                   <td className="border border-gray-300 p-2">
-                    {k === 'pp' || k === 'ppucs' ? `${state.p[k]?.toFixed(2) ?? '0.00'}%` : (state.p[k]?.toFixed(2) ?? '0.00')}
+                    {k === 'pp' || k === 'pppcs' ? `${state.p[k]?.toFixed(2) ?? '0.00'}%` : (state.p[k]?.toFixed(2) ?? '0.00')}
                   </td>
                 </tr>
               ))}
