@@ -24,7 +24,7 @@ const BeefTallowCalculator = () => {
     sortDirection: 'asc'
   });
 
-  const c = (o, d) => Object.entries(d).reduce((a, [k, v]) => {
+  const c = (o: number, d: Record<string, any>) => Object.entries(d).reduce((a: Record<string, any>, [k, v]) => {
     const g = v.r * o / 2;
     const uc = Math.ceil(g / v.v);
     const bestPrice = v.suppliers.reduce((best, supplier) => {
