@@ -58,14 +58,14 @@ interface State {
 
 const BeefTallowCalculator = () => {
   const [state, setState] = useState<State>({ 
-    oilAmount: 2, packagePrice: 23, packageCount: 8, packagingCost: 0.36, 
-    data: initData, 
-    ingredients: {}, 
-    profit: { packageCount: 0, ingredientCost: 0, packagingCost: 0, totalCost: 0, revenue: 0, profit: 0, profitPercentage: 0 }, 
-    newIngredient: { name: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], unitVolume: 0, ratio: 0 }, 
-    recipeName: '', 
-    recipes: { 'Default': initData }, 
-    currentRecipe: 'Default',
+    o: 2, pp: 23, pc: 8, pac: 0.36, 
+    d: initData, 
+    i: {}, 
+    p: { pc: 0, ic: 0, pac: 0, tc: 0, r: 0, pf: 0, pp: 0 }, 
+    n: { n: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], v: 0, r: 0 }, 
+    rn: '', 
+    r: { 'Default': initData }, 
+    cr: 'Default',
     sortColumn: '',
     sortDirection: 'asc'
   });
@@ -110,11 +110,11 @@ const BeefTallowCalculator = () => {
   };
 
   useEffect(() => {
-    const i = c(s.o, s.d);
-    setS(p => ({ ...p, i, p: cp(i, p.pc, p.pp, p.pac) }));
-  }, [s.o, s.pp, s.pc, s.pac, s.d]);
+    const i = c(state.o, state.d);
+    setState(p => ({ ...p, i, p: cp(i, p.pc, p.pp, p.pac) }));
+  }, [state.o, state.pp, state.pc, state.pac, state.d]);
 
-  const u = (k: string, f: string, v: number) => setS(p => {
+  const u = (k: string, f: string, v: number) => setState(p => {
     const nd = { ...p.d[k], [f]: Number(v) };
     if (f === 'p') (nd as any).u = v * nd.v / 1000;
     else if (f === 'u') (nd as any).p = v * 1000 / nd.v;
@@ -174,7 +174,7 @@ const BeefTallowCalculator = () => {
   };
 
   const handleSort = (column: string) => {
-    setS(prev => ({
+    setState(prev => ({
       ...prev,
       sortColumn: column,
       sortDirection: prev.sortColumn === column && prev.sortDirection === 'asc' ? 'desc' : 'asc'
@@ -182,8 +182,8 @@ const BeefTallowCalculator = () => {
   };
 
   const sortedIngredients = useMemo(() => {
-    const { sortColumn, sortDirection } = s;
-    return Object.entries(s.i).sort(([aKey, a], [bKey, b]) => {
+    const { sortColumn, sortDirection } = state;
+    return Object.entries(state.i).sort(([aKey, a], [bKey, b]) => {
       let aValue, bValue;
       switch (sortColumn) {
         case 'ingredient':
@@ -237,8 +237,8 @@ const BeefTallowCalculator = () => {
               <Input
                 id={k}
                 type="number"
-                value={s[k]}
-                onChange={e => k === 'o' ? h.o(e.target.value) : k === 'pc' ? h.pc(e.target.value) : setS(p => ({ ...p, [k]: Number(e.target.value) }))}
+                value={state[k]}
+                onChange={e => k === 'o' ? handlers.updateOilAmount(e.target.value) : k === 'pc' ? handlers.updatePackageCount(e.target.value) : setState(p => ({ ...p, [k]: Number(e.target.value) }))}
                 min="0"
                 step={step}
                 className="w-full"
@@ -248,11 +248,11 @@ const BeefTallowCalculator = () => {
         </div>
         <div className="mb-5">
           <Label htmlFor="r" className="mr-2">Recipe:</Label>
-          <select id="r" value={s.cr} onChange={e => h.lr(e.target.value)} className="mr-2 border rounded px-2 py-1">
-            {Object.keys(s.r).map(r => <option key={r} value={r}>{r}</option>)}
+          <select id="r" value={state.cr} onChange={e => handlers.loadRecipe(e.target.value)} className="mr-2 border rounded px-2 py-1">
+            {Object.keys(state.r).map(r => <option key={r} value={r}>{r}</option>)}
           </select>
-          <Input type="text" value={s.rn} onChange={e => setS(p => ({ ...p, rn: e.target.value }))} placeholder="New Recipe Name" className="w-36 mr-2" />
-          <Button onClick={h.sr}>Save Recipe</Button>
+          <Input type="text" value={state.rn} onChange={e => setState(p => ({ ...p, rn: e.target.value }))} placeholder="New Recipe Name" className="w-36 mr-2" />
+          <Button onClick={handlers.saveRecipe}>Save Recipe</Button>
         </div>
         <div className="mb-5">
           <h3 className="mb-2">New Ingredient</h3>
@@ -263,8 +263,8 @@ const BeefTallowCalculator = () => {
                 id="new-n"
                 type="text"
                 placeholder="Name"
-                value={s.n.n}
-                onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, n: e.target.value } }))}
+                value={state.newIngredient.name}
+                onChange={e => setState(prev => ({ ...prev, newIngredient: { ...prev.newIngredient, name: e.target.value } }))}
                 className="w-full"
               />
             </div>
@@ -274,8 +274,8 @@ const BeefTallowCalculator = () => {
                 id="new-v"
                 type="number"
                 placeholder="Unit Volume"
-                value={s.n.v}
-                onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, v: Number(e.target.value) } }))}
+                value={state.newIngredient.unitVolume}
+                onChange={e => setState(prev => ({ ...prev, newIngredient: { ...prev.newIngredient, unitVolume: Number(e.target.value) } }))}
                 className="w-full"
               />
             </div>
@@ -285,24 +285,24 @@ const BeefTallowCalculator = () => {
                 id="new-r"
                 type="number"
                 placeholder="Ratio"
-                value={s.n.r}
-                onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, r: Number(e.target.value) } }))}
+                value={state.newIngredient.ratio}
+                onChange={e => setState(prev => ({ ...prev, newIngredient: { ...prev.newIngredient, ratio: Number(e.target.value) } }))}
                 className="w-full"
               />
             </div>
           </div>
           <div className="mb-2">
             <h4 className="mb-1">Suppliers</h4>
-            {s.n.suppliers.map((supplier, index) => (
+            {state.newIngredient.suppliers.map((supplier, index) => (
               <div key={index} className="grid grid-cols-3 gap-2 mb-2">
                 <Input
                   type="text"
                   placeholder="Supplier Name"
                   value={supplier.name}
-                  onChange={e => setS(prev => {
-                    const newSuppliers = [...prev.n.suppliers];
+                  onChange={e => setState(prev => {
+                    const newSuppliers = [...prev.newIngredient.suppliers];
                     newSuppliers[index].name = e.target.value;
-                    return { ...prev, n: { ...prev.n, suppliers: newSuppliers } };
+                    return { ...prev, newIngredient: { ...prev.newIngredient, suppliers: newSuppliers } };
                   })}
                   className="w-full"
                 />
@@ -312,10 +312,10 @@ const BeefTallowCalculator = () => {
                       type="number"
                       placeholder="kg"
                       value={price.kg}
-                      onChange={e => setS(prev => {
-                        const newSuppliers = [...prev.n.suppliers];
+                      onChange={e => setState(prev => {
+                        const newSuppliers = [...prev.newIngredient.suppliers];
                         newSuppliers[index].prices[priceIndex].kg = Number(e.target.value);
-                        return { ...prev, n: { ...prev.n, suppliers: newSuppliers } };
+                        return { ...prev, newIngredient: { ...prev.newIngredient, suppliers: newSuppliers } };
                       })}
                       className="w-full"
                     />
@@ -323,10 +323,10 @@ const BeefTallowCalculator = () => {
                       type="number"
                       placeholder="Price"
                       value={price.price}
-                      onChange={e => setS(prev => {
-                        const newSuppliers = [...prev.n.suppliers];
+                      onChange={e => setState(prev => {
+                        const newSuppliers = [...prev.newIngredient.suppliers];
                         newSuppliers[index].prices[priceIndex].price = Number(e.target.value);
-                        return { ...prev, n: { ...prev.n, suppliers: newSuppliers } };
+                        return { ...prev, newIngredient: { ...prev.newIngredient, suppliers: newSuppliers } };
                       })}
                       className="w-full"
                     />
@@ -334,11 +334,11 @@ const BeefTallowCalculator = () => {
                 ))}
               </div>
             ))}
-            <Button onClick={() => setS(prev => ({ ...prev, n: { ...prev.n, suppliers: [...prev.n.suppliers, { name: '', prices: [{ kg: 1, price: 0 }] }] } }))}>
+            <Button onClick={() => setState(prev => ({ ...prev, newIngredient: { ...prev.newIngredient, suppliers: [...prev.newIngredient.suppliers, { name: '', prices: [{ kg: 1, price: 0 }] }] } }))}>
               Add Supplier
             </Button>
           </div>
-          <Button onClick={h.ai}>Add Ingredient</Button>
+          <Button onClick={handlers.addIngredient}>Add Ingredient</Button>
         </div>
         <table className="w-full border-collapse mb-5">
           <thead>
@@ -359,7 +359,7 @@ const BeefTallowCalculator = () => {
                     {label}
                     {key !== 'actions' && (
                       <button onClick={() => handleSort(key)} className="ml-2">
-                        {s.sortColumn === key ? (s.sortDirection === 'asc' ? '↑' : '↓') : '↕'}
+                        {state.sortColumn === key ? (state.sortDirection === 'asc' ? '↑' : '↓') : '↕'}
                       </button>
                     )}
                   </div>
@@ -371,11 +371,11 @@ const BeefTallowCalculator = () => {
             {sortedIngredients.map(([k, v]) => (
               <tr key={k}>
                 <td className="border border-gray-300 p-2">
-                  <Input type="text" value={k} onChange={e => h.updateIngredientName(k, e.target.value)} className="w-full" />
+                  <Input type="text" value={k} onChange={e => handlers.updateIngredientName(k, e.target.value)} className="w-full" />
                 </td>
                 <td className="border border-gray-300 p-2">{v.a}</td>
                 <td className="border border-gray-300 p-2">
-                  <Select value={v.currentSupplier} onChange={e => h.updateSupplier(k, e.target.value)} className="w-full">
+                  <Select value={v.currentSupplier} onChange={e => handlers.updateSupplier(k, e.target.value)} className="w-full">
                     {v.suppliers.map(supplier => (
                       <option key={supplier.name} value={supplier.name}>{supplier.name}</option>
                     ))}
@@ -391,7 +391,7 @@ const BeefTallowCalculator = () => {
                 <td className="border border-gray-300 p-2">{v.uc}</td>
                 <td className="border border-gray-300 p-2">{v.c?.toFixed(2) ?? '0.00'}</td>
                 <td className="border border-gray-300 p-2">
-                  <Button onClick={() => h.ri(k)}>Remove</Button>
+                  <Button onClick={() => handlers.removeIngredient(k)}>Remove</Button>
                 </td>
               </tr>
             ))}
@@ -413,7 +413,7 @@ const BeefTallowCalculator = () => {
                 <tr key={k}>
                   <td className="border border-gray-300 p-2">{l}</td>
                   <td className="border border-gray-300 p-2">
-                    {k === 'pp' ? `${s.p[k]?.toFixed(2) ?? '0.00'}%` : (s.p[k]?.toFixed(2) ?? '0.00')}
+                    {k === 'pp' ? `${state.p[k]?.toFixed(2) ?? '0.00'}%` : (state.p[k]?.toFixed(2) ?? '0.00')}
                   </td>
                 </tr>
               ))}
