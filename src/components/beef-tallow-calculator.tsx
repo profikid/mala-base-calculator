@@ -4,6 +4,20 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardContent, Button, Input, Label, Select } from './ui-components';
 import { initData } from '@/lib/recipe';
 
+const TABLE_HEADERS = [
+  { label: 'Ingredient', key: 'ingredient' },
+  { label: 'Amount', key: 'amount' },
+  { label: 'Current Supplier', key: 'currentSupplier' },
+  { label: 'Current Price/kg (€)', key: 'currentPrice' },
+  { label: 'Unit Price (€)', key: 'unitPrice' },
+  { label: 'Unit Volume (gr or ml)', key: 'unitVolume' },
+  { label: 'Ratio', key: 'ratio' },
+  { label: 'Unit Count', key: 'unitCount' },
+  { label: 'Total Unit Cost (€)', key: 'totalUnitCost' },
+  { label: 'Cost (€)', key: 'cost' },
+  { label: 'Actions', key: 'actions' }
+];
+
 interface Supplier {
   name: string;
   prices: { kg: number; price: number }[];
@@ -390,19 +404,7 @@ const BeefTallowCalculator = () => {
         <table className="w-full border-collapse mb-5">
           <thead>
             <tr>
-              {[
-                { label: 'Ingredient', key: 'ingredient' },
-                { label: 'Amount', key: 'amount' },
-                { label: 'Current Supplier', key: 'currentSupplier' },
-                { label: 'Current Price/kg (€)', key: 'currentPrice' },
-                { label: 'Unit Price (€)', key: 'unitPrice' },
-                { label: 'Unit Volume (gr or ml)', key: 'unitVolume' },
-                { label: 'Ratio', key: 'ratio' },
-                { label: 'Unit Count', key: 'unitCount' },
-                { label: 'Total Unit Cost (€)', key: 'totalUnitCost' },
-                { label: 'Cost (€)', key: 'cost' },
-                { label: 'Actions', key: 'actions' }
-              ].map(({ label, key }) => (
+              {TABLE_HEADERS.map(({ label, key }) => (
                 <TableHeader key={key} label={label} sortKey={key} />
               ))}
             </tr>
