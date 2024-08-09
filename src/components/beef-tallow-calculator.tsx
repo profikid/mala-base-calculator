@@ -227,7 +227,7 @@ const BeefTallowCalculator = () => {
   return (
     <Card>
       <CardHeader>
-        <h2>Mala base Calculator</h2>
+        <h2>Mala Base Calculator</h2>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-2 mb-5">
@@ -386,7 +386,7 @@ const BeefTallowCalculator = () => {
                     ))}
                   </Select>
                 </td>
-                <td className="border border-gray-300 p-2">{v.currentPrice.toFixed(2)} €/kg</td>
+                <td className="border border-gray-300 p-2">{v.currentPrice?.toFixed(2) ?? '0.00'} €/kg</td>
                 <td className="border border-gray-300 p-2">
                   <Input type="number" value={v.v} onChange={e => updateIngredient(k, 'v', e.target.value)} min="0" step="0.01" className="w-full" />
                 </td>
