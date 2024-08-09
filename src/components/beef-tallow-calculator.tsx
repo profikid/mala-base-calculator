@@ -107,17 +107,17 @@ const BeefTallowCalculator = () => {
     const totalCost = ingredientCost + packagingTotalCost;
     const revenue = packageCount * packagePrice;
     const profit = revenue - totalCost;
-    const unitCostSum = Object.values(ingredients).reduce((sum, { suppliers, currentSupplier, uc }) => {
+    const totalUnitCostSum = Object.values(ingredients).reduce((sum, { suppliers, currentSupplier, uc }) => {
       const supplier = suppliers.find(s => s.name === currentSupplier);
       if (supplier) {
         const price = supplier.prices.reduce((bestPrice, tier) => {
           return tier.kg <= (uc ?? 0) ? tier.price / tier.kg : bestPrice;
         }, supplier.prices[0].price / supplier.prices[0].kg);
-        return sum + (price * (uc ?? 0));
+        return sum + (price * (uc ?? 0) * (uc ?? 0));
       }
       return sum;
     }, 0);
-    const profitFromUnitCostSum = revenue - unitCostSum;
+    const profitFromTotalUnitCostSum = revenue - totalUnitCostSum;
     return { 
       pc: packageCount, 
       ic: ingredientCost, 
@@ -126,9 +126,9 @@ const BeefTallowCalculator = () => {
       r: revenue, 
       pf: profit, 
       pp: revenue > 0 ? (profit / revenue * 100) : 0,
-      ucs: unitCostSum,
-      pfucs: profitFromUnitCostSum,
-      ppucs: revenue > 0 ? (profitFromUnitCostSum / revenue * 100) : 0
+      tucs: totalUnitCostSum,
+      pftucs: profitFromTotalUnitCostSum,
+      pptucs: revenue > 0 ? (profitFromTotalUnitCostSum / revenue * 100) : 0
     };
   };
 
@@ -385,9 +385,9 @@ const BeefTallowCalculator = () => {
                 { k: 'r', l: 'Revenue (€)' },
                 { k: 'pf', l: 'Profit (€)' },
                 { k: 'pp', l: 'Profit Percentage' },
-                { k: 'ucs', l: 'Unit Cost Sum (€)' },
-                { k: 'pfucs', l: 'Profit from Unit Cost Sum (€)' },
-                { k: 'ppucs', l: 'Profit Percentage from Unit Cost Sum' }
+                { k: 'tucs', l: 'Total Unit Cost Sum (€)' },
+                { k: 'pftucs', l: 'Profit from Total Unit Cost Sum (€)' },
+                { k: 'pptucs', l: 'Profit Percentage from Total Unit Cost Sum' }
               ].map(({ k, l }) => (
                 <tr key={k}>
                   <td className="border border-gray-300 p-2">{l}</td>
