@@ -42,6 +42,7 @@ interface State {
     r: number;
     pf: number;
     pp: number;
+    ucs: number; // Add this line for unit cost sum
   };
   n: {
     n: string;
@@ -106,6 +107,7 @@ const BeefTallowCalculator = () => {
     const totalCost = ingredientCost + packagingTotalCost;
     const revenue = packageCount * packagePrice;
     const profit = revenue - totalCost;
+    const unitCostSum = Object.values(ingredients).reduce((sum, { currentPrice, v }) => sum + ((currentPrice ?? 0) * (v / 1000)), 0);
     return { 
       pc: packageCount, 
       ic: ingredientCost, 
@@ -113,7 +115,8 @@ const BeefTallowCalculator = () => {
       tc: totalCost, 
       r: revenue, 
       pf: profit, 
-      pp: revenue > 0 ? (profit / revenue * 100) : 0 
+      pp: revenue > 0 ? (profit / revenue * 100) : 0,
+      ucs: unitCostSum
     };
   };
 
@@ -417,7 +420,8 @@ const BeefTallowCalculator = () => {
                 { k: 'tc', l: 'Total Cost (€)' },
                 { k: 'r', l: 'Revenue (€)' },
                 { k: 'pf', l: 'Profit (€)' },
-                { k: 'pp', l: 'Profit Percentage' }
+                { k: 'pp', l: 'Profit Percentage' },
+                { k: 'ucs', l: 'Unit Cost Sum (€)' }
               ].map(({ k, l }) => (
                 <tr key={k}>
                   <td className="border border-gray-300 p-2">{l}</td>
