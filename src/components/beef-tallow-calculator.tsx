@@ -57,15 +57,15 @@ interface State {
 }
 
 const BeefTallowCalculator = () => {
-  const [s, setS] = useState<State>({ 
-    o: 2, pp: 23, pc: 8, pac: 0.36, 
-    d: initData, 
-    i: {}, 
-    p: { pc: 0, ic: 0, pac: 0, tc: 0, r: 0, pf: 0, pp: 0 }, 
-    n: { n: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], v: 0, r: 0 }, 
-    rn: '', 
-    r: { 'Default': initData }, 
-    cr: 'Default',
+  const [state, setState] = useState<State>({ 
+    oilAmount: 2, packagePrice: 23, packageCount: 8, packagingCost: 0.36, 
+    data: initData, 
+    ingredients: {}, 
+    profit: { packageCount: 0, ingredientCost: 0, packagingCost: 0, totalCost: 0, revenue: 0, profit: 0, profitPercentage: 0 }, 
+    newIngredient: { name: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], unitVolume: 0, ratio: 0 }, 
+    recipeName: '', 
+    recipes: { 'Default': initData }, 
+    currentRecipe: 'Default',
     sortColumn: '',
     sortDirection: 'asc'
   });
@@ -122,39 +122,53 @@ const BeefTallowCalculator = () => {
     return { ...p, d: { ...p.d, [k]: nd } };
   });
 
-  const h = {
-    o: v => { const no = Number(v); setS(p => ({ ...p, o: no, pc: Math.floor(no * 4) })); },
-    pc: v => { const npc = Number(v); setS(p => ({ ...p, pc: npc, o: npc / 4 })); },
-    ai: () => {
-      const { n, suppliers, v, r } = s.n;
-      if (n && suppliers.length > 0 && v && r) {
-        setS(p => ({ 
-          ...p, 
-          d: { ...p.d, [n]: { suppliers, v: Number(v), r: Number(r) } }, 
-          n: { n: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], v: 0, r: 0 } 
+  const handlers = {
+    updateOilAmount: (value: string) => { 
+      const newAmount = Number(value); 
+      setState(prev => ({ ...prev, oilAmount: newAmount, packageCount: Math.floor(newAmount * 4) })); 
+    },
+    updatePackageCount: (value: string) => { 
+      const newCount = Number(value); 
+      setState(prev => ({ ...prev, packageCount: newCount, oilAmount: newCount / 4 })); 
+    },
+    addIngredient: () => {
+      const { name, suppliers, unitVolume, ratio } = state.newIngredient;
+      if (name && suppliers.length > 0 && unitVolume && ratio) {
+        setState(prev => ({ 
+          ...prev, 
+          data: { ...prev.data, [name]: { suppliers, v: Number(unitVolume), r: Number(ratio) } }, 
+          newIngredient: { name: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], unitVolume: 0, ratio: 0 } 
         }));
       }
     },
-    ri: k => setS(p => { const nd = { ...p.d }; delete nd[k]; return { ...p, d: nd }; }),
-    sr: () => s.rn && setS(p => ({ ...p, r: { ...p.r, [p.rn]: p.d }, rn: '' })),
-    lr: n => setS(p => ({ ...p, d: p.r[n], cr: n })),
-    updateIngredientName: (oldName, newName) => {
-      setS(p => {
-        const newD = { ...p.d };
-        newD[newName] = newD[oldName];
-        delete newD[oldName];
-        return { ...p, d: newD };
+    removeIngredient: (key: string) => setState(prev => { 
+      const newData = { ...prev.data }; 
+      delete newData[key]; 
+      return { ...prev, data: newData }; 
+    }),
+    saveRecipe: () => state.recipeName && setState(prev => ({ 
+      ...prev, 
+      recipes: { ...prev.recipes, [prev.recipeName]: prev.data }, 
+      recipeName: '' 
+    })),
+    loadRecipe: (name: string) => setState(prev => ({ ...prev, data: prev.recipes[name], currentRecipe: name })),
+    updateIngredientName: (oldName: string, newName: string) => {
+      setState(prev => {
+        const newData = { ...prev.data };
+        newData[newName] = newData[oldName];
+        delete newData[oldName];
+        return { ...prev, data: newData };
       });
     },
-    updateSupplier: (ingredient, supplierName) => {
-      setS(p => {
-        const newD = { ...p.d };
-        const supplier = newD[ingredient].suppliers.find(s => s.name === supplierName);
+    updateSupplier: (ingredient: string, supplierName: string) => {
+      setState(prev => {
+        const newData = { ...prev.data };
+        const supplier = newData[ingredient].suppliers.find(s => s.name === supplierName);
         if (supplier) {
-          newD[ingredient].currentSupplier = supplierName;
-          newD[ingredient].currentPrice = supplier.prices[0].price; // Default to first price
+          newData[ingredient].currentSupplier = supplierName;
+          newData[ingredient].currentPrice = supplier.prices[0].price; // Default to first price
         }
-        return { ...p, d: newD };
+        return { ...prev, data: newData };
       });
     }
   };
