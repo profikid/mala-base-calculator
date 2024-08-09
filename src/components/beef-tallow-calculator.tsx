@@ -107,15 +107,9 @@ const BeefTallowCalculator = () => {
     const totalCost = ingredientCost + packagingTotalCost;
     const revenue = packageCount * packagePrice;
     const profit = revenue - totalCost;
-    const totalUnitCostSum = Object.values(ingredients).reduce((sum, { suppliers, currentSupplier, uc }) => {
-      const supplier = suppliers.find(s => s.name === currentSupplier);
-      if (supplier) {
-        const price = supplier.prices.reduce((bestPrice, tier) => {
-          return tier.kg <= (uc ?? 0) ? tier.price / tier.kg : bestPrice;
-        }, supplier.prices[0].price / supplier.prices[0].kg);
-        return sum + (price * (uc ?? 0) * (uc ?? 0));
-      }
-      return sum;
+    const totalUnitCostSum = Object.values(ingredients).reduce((sum, { v, uc, currentPrice }) => {
+      const unitPrice = (currentPrice ?? 0) * v / 1000;
+      return sum + (unitPrice * (uc ?? 0));
     }, 0);
     const profitFromTotalUnitCostSum = revenue - totalUnitCostSum;
     return { 
@@ -385,14 +379,14 @@ const BeefTallowCalculator = () => {
                 { k: 'r', l: 'Revenue (€)' },
                 { k: 'pf', l: 'Profit (€)' },
                 { k: 'pp', l: 'Profit Percentage' },
-                { k: 'tucs', l: 'Total Unit Cost Sum (€)' },
-                { k: 'pftucs', l: 'Profit from Total Unit Cost Sum (€)' },
-                { k: 'pptucs', l: 'Profit Percentage from Total Unit Cost Sum' }
+                { k: 'tucs', l: 'Total Unit Cost Sum (€)', f: (v) => v.toFixed(2) },
+                { k: 'pftucs', l: 'Profit from Total Unit Cost Sum (€)', f: (v) => v.toFixed(2) },
+                { k: 'pptucs', l: 'Profit Percentage from Total Unit Cost Sum', f: (v) => `${v.toFixed(2)}%` }
               ].map(({ k, l }) => (
                 <tr key={k}>
                   <td className="border border-gray-300 p-2">{l}</td>
                   <td className="border border-gray-300 p-2">
-                    {k === 'pp' || k === 'pppcs' ? `${state.p[k]?.toFixed(2) ?? '0.00'}%` : (state.p[k]?.toFixed(2) ?? '0.00')}
+                    {item.f ? item.f(state.p[k] ?? 0) : (state.p[k]?.toFixed(2) ?? '0.00')}
                   </td>
                 </tr>
               ))}
