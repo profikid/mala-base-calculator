@@ -28,7 +28,10 @@ const BeefTallowCalculator = () => {
     const g = v.r * o / 2;
     const uc = Math.ceil(g / v.v);
     const bestPrice = v.suppliers.reduce((best, supplier) => {
-      const applicablePrice = supplier.prices.reduce((p, tier) => tier.kg <= g/1000 ? tier.price : p, supplier.prices[0].price);
+      const applicablePrice = supplier.prices.reduce((p, tier) => {
+        const pricePerKg = tier.price / tier.kg;
+        return tier.kg <= g/1000 ? pricePerKg : p;
+      }, supplier.prices[0].price / supplier.prices[0].kg);
       return applicablePrice < best.price ? { price: applicablePrice, supplier: supplier.name } : best;
     }, { price: Infinity, supplier: '' });
     a[k] = { 
@@ -317,7 +320,7 @@ const BeefTallowCalculator = () => {
                     ))}
                   </Select>
                 </td>
-                <td className="border border-gray-300 p-2">{v.currentPrice.toFixed(2)}</td>
+                <td className="border border-gray-300 p-2">{v.currentPrice.toFixed(2)} €/kg</td>
                 <td className="border border-gray-300 p-2">
                   <Input type="number" value={v.v} onChange={e => u(k, 'v', e.target.value)} min="0" step="0.01" className="w-full" />
                 </td>
