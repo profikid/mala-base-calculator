@@ -108,6 +108,7 @@ const BeefTallowCalculator = () => {
     const revenue = packageCount * packagePrice;
     const profit = revenue - totalCost;
     const unitCostSum = Object.values(ingredients).reduce((sum, { currentPrice, v }) => sum + ((currentPrice ?? 0) * (v / 1000)), 0);
+    const profitFromUnitCostSum = revenue - unitCostSum;
     return { 
       pc: packageCount, 
       ic: ingredientCost, 
@@ -116,7 +117,9 @@ const BeefTallowCalculator = () => {
       r: revenue, 
       pf: profit, 
       pp: revenue > 0 ? (profit / revenue * 100) : 0,
-      ucs: unitCostSum
+      ucs: unitCostSum,
+      pfucs: profitFromUnitCostSum,
+      ppucs: revenue > 0 ? (profitFromUnitCostSum / revenue * 100) : 0
     };
   };
 
@@ -373,12 +376,14 @@ const BeefTallowCalculator = () => {
                 { k: 'r', l: 'Revenue (€)' },
                 { k: 'pf', l: 'Profit (€)' },
                 { k: 'pp', l: 'Profit Percentage' },
-                { k: 'ucs', l: 'Unit Cost Sum (€)' }
+                { k: 'ucs', l: 'Unit Cost Sum (€)' },
+                { k: 'pfucs', l: 'Profit from Unit Cost Sum (€)' },
+                { k: 'ppucs', l: 'Profit Percentage from Unit Cost Sum' }
               ].map(({ k, l }) => (
                 <tr key={k}>
                   <td className="border border-gray-300 p-2">{l}</td>
                   <td className="border border-gray-300 p-2">
-                    {k === 'pp' ? `${state.p[k]?.toFixed(2) ?? '0.00'}%` : (state.p[k]?.toFixed(2) ?? '0.00')}
+                    {k === 'pp' || k === 'ppucs' ? `${state.p[k]?.toFixed(2) ?? '0.00'}%` : (state.p[k]?.toFixed(2) ?? '0.00')}
                   </td>
                 </tr>
               ))}
