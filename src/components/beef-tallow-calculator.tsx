@@ -54,6 +54,12 @@ interface State {
   cr: string;
   sortColumn: string;
   sortDirection: 'asc' | 'desc';
+  newIngredient: {
+    name: string;
+    suppliers: Supplier[];
+    unitVolume: number;
+    ratio: number;
+  };
 }
 
 const BeefTallowCalculator = () => {
