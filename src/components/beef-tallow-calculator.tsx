@@ -9,25 +9,20 @@ const Input = ({ className = "", ...props }) => <input className={`border rounde
 const Label = ({ children, className = "", ...props }) => <label className={`block mb-2 ${className}`} {...props}>{children}</label>;
 
 const initData = {
-  'Dried chilies': { p: 20, u: 5, v: 250, r: 400 },
-  'Sichuan pepper': { p: 30, u: 3, v: 100, r: 60 },
-  'Shaoxing wine': { p: 10, u: 5, v: 500, r: 240 },
-  'Beef tallow': { p: 15, u: 7.5, v: 500, r: 800 },
-  'Rapeseed oil': { p: 8, u: 4, v: 500, r: 200 },
-  'Star anise': { p: 25, u: 2.5, v: 100, r: 8 },
-  'Cassia cinnamon': { p: 20, u: 2, v: 100, r: 16 },
-  'Bay leaves': { p: 15, u: 1.5, v: 100, r: 4.8 },
-  'Chinese black cardamom': { p: 40, u: 4, v: 100, r: 12 },
-  'White cardamom': { p: 35, u: 3.5, v: 100, r: 4 },
-  'Fennel seeds': { p: 18, u: 1.8, v: 100, r: 20 },
-  'Onion': { p: 2, u: 0.5, v: 250, r: 300 },
-  'Scallions': { p: 5, u: 1, v: 200, r: 300 },
-  'Cilantro': { p: 8, u: 1.6, v: 200, r: 40 },
-  'Ginger': { p: 6, u: 1.5, v: 250, r: 120 },
-  'Sichuan chilli bean paste': { p: 25, u: 5, v: 200, r: 200 },
-  'Fermented black beans': { p: 15, u: 3, v: 200, r: 64 },
-  'Rock sugar': { p: 5, u: 1, v: 200, r: 48 },
-  'Orange peel': { p: 10, u: 2, v: 100, r: 20 }
+  'Dried chilies': { 
+    suppliers: [
+      { name: 'Supplier A', prices: [{ kg: 1, price: 20 }, { kg: 5, price: 18 }] },
+      { name: 'Supplier B', prices: [{ kg: 1, price: 22 }, { kg: 5, price: 19 }] }
+    ],
+    v: 250, r: 400 
+  },
+  'Sichuan pepper': { 
+    suppliers: [
+      { name: 'Supplier A', prices: [{ kg: 1, price: 30 }, { kg: 3, price: 28 }] }
+    ],
+    v: 100, r: 60 
+  },
+  // ... Add similar structure for other ingredients
 };
 
 const BeefTallowCalculator = () => {
@@ -36,7 +31,7 @@ const BeefTallowCalculator = () => {
     d: initData, 
     i: {}, 
     p: { pc: 0, ic: 0, pac: 0, tc: 0, r: 0, pf: 0, pp: 0 }, 
-    n: { n: '', p: 0, u: 0, v: 0, r: 0 }, 
+    n: { n: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], v: 0, r: 0 }, 
     rn: '', 
     r: { 'Default': initData }, 
     cr: 'Default' 
@@ -82,9 +77,13 @@ const BeefTallowCalculator = () => {
     o: v => { const no = Number(v); setS(p => ({ ...p, o: no, pc: Math.floor(no * 4) })); },
     pc: v => { const npc = Number(v); setS(p => ({ ...p, pc: npc, o: npc / 4 })); },
     ai: () => {
-      const { n, p, u, v, r } = s.n;
-      if (n && p && u && v && r) {
-        setS(p => ({ ...p, d: { ...p.d, [n]: { p: Number(p), u: Number(u), v: Number(v), r: Number(r) } }, n: { n: '', p: 0, u: 0, v: 0, r: 0 } }));
+      const { n, suppliers, v, r } = s.n;
+      if (n && suppliers.length > 0 && v && r) {
+        setS(p => ({ 
+          ...p, 
+          d: { ...p.d, [n]: { suppliers, v: Number(v), r: Number(r) } }, 
+          n: { n: '', suppliers: [{ name: '', prices: [{ kg: 1, price: 0 }] }], v: 0, r: 0 } 
+        }));
       }
     },
     ri: k => setS(p => { const nd = { ...p.d }; delete nd[k]; return { ...p, d: nd }; }),
@@ -129,33 +128,94 @@ const BeefTallowCalculator = () => {
         </div>
         <div className="mb-5">
           <h3 className="mb-2">New Ingredient</h3>
-          <div className="grid grid-cols-5 gap-2 mb-2">
-            {[
-              { k: 'n', p: 'Name', t: 'text' },
-              { k: 'p', p: 'Price/kg', t: 'number' },
-              { k: 'u', p: 'Unit Price', t: 'number' },
-              { k: 'v', p: 'Unit Volume', t: 'number' },
-              { k: 'r', p: 'Ratio', t: 'number' }
-            ].map(({ k, p, t }) => (
-              <div key={k} className="flex flex-col">
-                <Label htmlFor={`new-${k}`} className="mb-1">{p}</Label>
+          <div className="grid grid-cols-4 gap-2 mb-2">
+            <div className="flex flex-col">
+              <Label htmlFor="new-n" className="mb-1">Name</Label>
+              <Input
+                id="new-n"
+                type="text"
+                placeholder="Name"
+                value={s.n.n}
+                onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, n: e.target.value } }))}
+                className="w-full"
+              />
+            </div>
+            <div className="flex flex-col">
+              <Label htmlFor="new-v" className="mb-1">Unit Volume</Label>
+              <Input
+                id="new-v"
+                type="number"
+                placeholder="Unit Volume"
+                value={s.n.v}
+                onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, v: Number(e.target.value) } }))}
+                className="w-full"
+              />
+            </div>
+            <div className="flex flex-col">
+              <Label htmlFor="new-r" className="mb-1">Ratio</Label>
+              <Input
+                id="new-r"
+                type="number"
+                placeholder="Ratio"
+                value={s.n.r}
+                onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, r: Number(e.target.value) } }))}
+                className="w-full"
+              />
+            </div>
+          </div>
+          <div className="mb-2">
+            <h4 className="mb-1">Suppliers</h4>
+            {s.n.suppliers.map((supplier, index) => (
+              <div key={index} className="grid grid-cols-3 gap-2 mb-2">
                 <Input
-                  id={`new-${k}`}
-                  type={t}
-                  placeholder={p}
-                  value={s.n[k]}
-                  onChange={e => setS(prev => ({ ...prev, n: { ...prev.n, [k]: e.target.value } }))}
+                  type="text"
+                  placeholder="Supplier Name"
+                  value={supplier.name}
+                  onChange={e => setS(prev => {
+                    const newSuppliers = [...prev.n.suppliers];
+                    newSuppliers[index].name = e.target.value;
+                    return { ...prev, n: { ...prev.n, suppliers: newSuppliers } };
+                  })}
                   className="w-full"
                 />
+                {supplier.prices.map((price, priceIndex) => (
+                  <React.Fragment key={priceIndex}>
+                    <Input
+                      type="number"
+                      placeholder="kg"
+                      value={price.kg}
+                      onChange={e => setS(prev => {
+                        const newSuppliers = [...prev.n.suppliers];
+                        newSuppliers[index].prices[priceIndex].kg = Number(e.target.value);
+                        return { ...prev, n: { ...prev.n, suppliers: newSuppliers } };
+                      })}
+                      className="w-full"
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Price"
+                      value={price.price}
+                      onChange={e => setS(prev => {
+                        const newSuppliers = [...prev.n.suppliers];
+                        newSuppliers[index].prices[priceIndex].price = Number(e.target.value);
+                        return { ...prev, n: { ...prev.n, suppliers: newSuppliers } };
+                      })}
+                      className="w-full"
+                    />
+                  </React.Fragment>
+                ))}
               </div>
             ))}
+            <Button onClick={() => setS(prev => ({ ...prev, n: { ...prev.n, suppliers: [...prev.n.suppliers, { name: '', prices: [{ kg: 1, price: 0 }] }] } }))}>
+              Add Supplier
+            </Button>
           </div>
           <Button onClick={h.ai}>Add Ingredient</Button>
         </div>
         <table className="w-full border-collapse mb-5">
           <thead>
             <tr>
-              {['Ingredient', 'Amount', 'Price/kg (€)', 'Unit Price (€)', 'Unit Volume (ml)', 'Ratio', 'Unit Count', 'Cost (€)', 'Actions'].map(h => <th key={h} className="border border-gray-300 p-2">{h}</th>)}
+              {['Ingredient', 'Amount', 'Current Supplier', 'Current Price/kg (€)', 'Unit Volume (ml)', 'Ratio', 'Unit Count', 'Cost (€)', 'Actions'].map(h => <th key={h} className="border border-gray-300 p-2">{h}</th>)}
             </tr>
           </thead>
           <tbody>
@@ -163,11 +223,14 @@ const BeefTallowCalculator = () => {
               <tr key={k}>
                 <td className="border border-gray-300 p-2">{k}</td>
                 <td className="border border-gray-300 p-2">{v.a}</td>
-                {['p', 'u', 'v', 'r'].map(f => (
-                  <td key={f} className="border border-gray-300 p-2">
-                    <Input type="number" value={v[f]} onChange={e => u(k, f, e.target.value)} min="0" step="0.01" className="w-full" />
-                  </td>
-                ))}
+                <td className="border border-gray-300 p-2">{v.currentSupplier}</td>
+                <td className="border border-gray-300 p-2">{v.currentPrice.toFixed(2)}</td>
+                <td className="border border-gray-300 p-2">
+                  <Input type="number" value={v.v} onChange={e => u(k, 'v', e.target.value)} min="0" step="0.01" className="w-full" />
+                </td>
+                <td className="border border-gray-300 p-2">
+                  <Input type="number" value={v.r} onChange={e => u(k, 'r', e.target.value)} min="0" step="0.01" className="w-full" />
+                </td>
                 <td className="border border-gray-300 p-2">{v.uc}</td>
                 <td className="border border-gray-300 p-2">{v.c?.toFixed(2) ?? '0.00'}</td>
                 <td className="border border-gray-300 p-2">
